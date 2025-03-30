@@ -50,4 +50,20 @@ else
        echo "jenkins already installled"
 fi
 
+#Trivy installtion
+echo "Checking trivy is in the system or not?"
+if command -v trivy >/dev/null 2>&1
+then
+       echo "Trivy is already installed"
+else
+       echo "Trivy is installing"
+       docker run -itd  --name SonarQube-Server -p 9000:9000 sonarqube:Its-community
+       sudo apt-get install wget apt-transport-https gnupg lsb-release -y
+       wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | sudo apt-key add -
+       echo deb https://aquasecurity.github.io/trivy-repo/deb $(lsb_release -sc) main | sudo tee -a /etc/apt/sources.list.d/trivy.list
+       sudo apt-get update -y
+       sudo apt-get install trivy -y
+       echo " Trivy is insatlled successfully"
+fi
+
 echo "Server setup completed successfully!"
